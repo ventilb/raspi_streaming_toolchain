@@ -35,9 +35,14 @@ import java.util.List;
 import java.util.NoSuchElementException;
 
 /**
- * Klassenkommentar.
+ * Implements a controller to send jpg images stored in a {@link FileDescriptorDao} layer as a Motion JPG stream.
+ * <p>
+ * This code is based on ideas of the mjpg-streamer project. The code to write a Motion JPG stream was adapted from this
+ * project. See the output_http plugin and httpd.c for details.
+ * </p>
  *
  * @author Manuel Schulze <manuel_schulze@i-entwicklung.de>
+ * @see <a href="http://sourceforge.net/projects/mjpg-streamer/">http://sourceforge.net/projects/mjpg-streamer/</a>
  * @since 03.04.13 - 21:13
  */
 @Controller
