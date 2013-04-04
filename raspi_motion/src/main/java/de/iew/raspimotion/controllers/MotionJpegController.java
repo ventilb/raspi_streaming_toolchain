@@ -23,6 +23,7 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
+import org.springframework.util.Assert;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -55,7 +56,8 @@ public class MotionJpegController {
             HttpServletResponse response,
             @PathVariable String imagename
     ) throws Exception {
-        // TODO imagename validieren
+        Assert.isTrue(validateImagename(imagename));
+
         FileDescriptor file = this.fileDao.getFileLastCreated(imagename);
 
         if (file == null) {
@@ -74,6 +76,8 @@ public class MotionJpegController {
             HttpServletResponse response,
             @PathVariable String imagename
     ) throws Exception {
+        Assert.isTrue(validateImagename(imagename));
+
         FileDescriptor file = this.fileDao.getFileLastCreated(imagename);
 
         if (file == null) {
@@ -158,6 +162,10 @@ public class MotionJpegController {
 
     public String getCrLf() {
         return "\r\n";
+    }
+
+    public boolean validateImagename(String imagenameToValidate) {
+        return imagenameToValidate.matches("[a-zA-Z\\d_-]+\\.jpg");
     }
 
     // Spring und Dao Abhängigkeiten //////////////////////////////////////////

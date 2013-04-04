@@ -186,6 +186,18 @@
             <artifactId>standard</artifactId>
             <version>1.1.2</version>
         </dependency>
+
+        <!--
+        | Testing
+        |
+        | Lists the dependencies to write automated tests.
+        -->
+        <dependency>
+            <groupId>junit</groupId>
+            <artifactId>junit</artifactId>
+            <version>4.10</version>
+            <scope>test</scope>
+        </dependency>
     </dependencies>
     <build>
         <finalName>raspi_motion</finalName>
