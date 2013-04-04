@@ -17,7 +17,7 @@
 /**
  * Sample hello world for node JS.
  * <p>
- * My first step with node :-) The example was take from the nodejs.org webpage
+ * My first step with node :-) The example was taken from the nodejs.org webpage
  * </p>
  *
  * @author Manuel Schulze <manuel_schulze@i-entwicklung.de>
