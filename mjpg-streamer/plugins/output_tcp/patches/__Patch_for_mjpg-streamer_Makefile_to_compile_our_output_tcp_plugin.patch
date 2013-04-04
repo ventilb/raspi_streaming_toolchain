@@ -1,0 +1,34 @@
+Index: Makefile
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>windows-1252
+===================================================================
+--- Makefile	(revision 177)
++++ Makefile	(revision )
+@@ -36,6 +36,7 @@
+ PLUGINS += output_file.so
+ PLUGINS += output_udp.so
+ PLUGINS += output_http.so
++PLUGINS += output_tcp.so
+ PLUGINS += input_testpicture.so
+ #PLUGINS += output_autofocus.so
+ #PLUGINS += input_gspcav1.so
+@@ -89,6 +90,10 @@
+ 	make -C plugins/output_file all
+ 	cp plugins/output_file/output_file.so .
+ 
++output_tcp.so: mjpg_streamer.h utils.h
++	make -C plugins/output_tcp all
++	cp plugins/output_tcp/output_tcp.so .
++
+ ifeq ($(WXP_COMPAT),true)
+ output_http.so: mjpg_streamer.h utils.h
+ 	make -C plugins/output_http -DWXP_COMPAT all
+@@ -137,6 +142,7 @@
+ 	make -C plugins/input_uvc $@
+ 	make -C plugins/input_testpicture $@
+ 	make -C plugins/output_file $@
++	make -C plugins/output_tcp $@
+ 	make -C plugins/output_http $@
+ 	make -C plugins/output_udp $@
+ 	make -C plugins/output_autofocus $@

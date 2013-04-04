@@ -1,0 +1,13 @@
+  Raspberry PI streaming toolchain - image_read
+  Copyright 2012-2013 Manuel Schulze <manuel_schulze@i-entwicklung.de>
+
+  This product includes or uses software developed by third party
+  developers.
+
+* The Java Mongo DB driver (http://docs.mongodb.org/ecosystem/drivers/java/)
+  is licensed under the terms of the Apache 2.0 license.
+  Please refer to: https://github.com/mongodb/mongo-java-driver/blob/master/LICENSE.txt
+
+* The libraries released from the Apache Commons repository (http://commons.apache.org/)
+  are licensed under the terms of the Apache 2.0 license.
+  * commons-io
