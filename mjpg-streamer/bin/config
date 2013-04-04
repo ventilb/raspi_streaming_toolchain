@@ -1,0 +1,12 @@
+
+CURRENT_WORKING_DIR=`pwd`
+COMPILE_BASE_DIR=/tmp/mjpg-streamer-src
+MODULE_NAME=mjpg-streamer
+PACKAGE_FILE=$COMPILE_BASE_DIR/mjpg-streamer.tar.gz
+
+function printConfiguration {
+    echo "Current Working Dir: $CURRENT_WORKING_DIR"
+    echo "   Compile Base Dir: $COMPILE_BASE_DIR"
+    echo "       Package File: $PACKAGE_FILE"
+    echo ""
+}
