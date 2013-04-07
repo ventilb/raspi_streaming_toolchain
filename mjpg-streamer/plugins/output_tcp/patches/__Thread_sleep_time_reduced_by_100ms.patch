@@ -1,0 +1,16 @@
+Index: plugins/input_uvc/input_uvc.c
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+--- plugins/input_uvc/input_uvc.c	(revision 177)
++++ plugins/input_uvc/input_uvc.c	(revision )
+@@ -429,7 +429,7 @@
+         /* only use usleep if the fps is below 5, otherwise the overhead is too long */
+         if(pcontext->videoIn->fps < 5) {
+             DBG("waiting for next frame for %d us\n", 1000 * 1000 / pcontext->videoIn->fps);
+-            usleep(1000 * 1000 / pcontext->videoIn->fps);
++            usleep(9000 * 1000 / pcontext->videoIn->fps);
+         } else {
+             DBG("waiting for next frame\n");
+         }
