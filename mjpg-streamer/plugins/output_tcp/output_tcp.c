@@ -146,8 +146,16 @@ void *worker_thread(void *arg)
     addr.sin_port = htons(port);
     // -----------------------------------------------------------
 
+    struct timeval imageProcessingStart;
+    struct timeval imageProcessingStop;
+
+    struct timeval socketStart;
+    struct timeval socketStop;
+
     while (ok >= 0 && !pglobal->stop) {
         //DBG("waiting for fresh frame\n");
+
+        gettimeofday(&imageProcessingStart, NULL);
 
         pthread_mutex_lock(&pglobal->in[input_number].db);
         pthread_cond_wait(&pglobal->in[input_number].db_update, &pglobal->in[input_number].db);
@@ -176,9 +184,18 @@ void *worker_thread(void *arg)
         /* allow others to access the global buffer again */
         pthread_mutex_unlock(&pglobal->in[input_number].db);
 
+        gettimeofday(&imageProcessingStop, NULL);
+
+        printDuration(&imageProcessingStart, &imageProcessingStop, "Image");
+
         /* Send image */
+        gettimeofday(&socketStart, NULL);
+
         DBG("Create connection to %s:%d\n", server, port);
         sd = socket(AF_INET, SOCK_STREAM, 0);
+
+        // Test
+        usleep(200 * 1000);
 
         if (connect(sd , (struct sockaddr*) &addr , sizeof(addr)) == 0) {
             DBG("Connection to %s:%d established\n", server, port);
@@ -192,6 +209,10 @@ void *worker_thread(void *arg)
         } else {
             perror("connect");
         }
+
+        gettimeofday(&socketStop, NULL);
+
+        printDuration(&socketStart, &socketStop, "Socket");
     }
 
     DBG("Ending TCP worker thread\n");
@@ -200,6 +221,11 @@ void *worker_thread(void *arg)
     pthread_cleanup_pop(1);
 
     return NULL;
+}
+
+
+void printDuration(struct timeval *start, struct timeval *end, char * text) {
+    OPRINT("%s: Start: %d:%d, End: %d:%d, Duration: %d:%d\n", text, start->tv_sec, start->tv_usec, end->tv_sec, end->tv_usec, end->tv_sec - start->tv_sec, end->tv_usec - start->tv_usec);
 }
 
 /*** plugin interface functions ***/
