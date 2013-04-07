@@ -18,6 +18,7 @@ OTHER_HEADERS = ../../mjpg_streamer.h ../../utils.h ../output.h ../input.h
 
 CFLAGS += -O2 -DLINUX -D_GNU_SOURCE -Wall -shared -fPIC
 #CFLAGS += -DDEBUG
+#CFLAGS += -DPRINT_TIMESTAMPS
 LFLAGS += -lpthread -ldl
 
 all: output_tcp.so

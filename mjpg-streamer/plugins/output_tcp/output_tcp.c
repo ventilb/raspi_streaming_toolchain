@@ -225,7 +225,9 @@ void *worker_thread(void *arg)
 
 
 void printDuration(struct timeval *start, struct timeval *end, char * text) {
+    #ifdef PRINT_TIMESTAMPS
     OPRINT("%s: Start: %d:%d, End: %d:%d, Duration: %d:%d\n", text, start->tv_sec, start->tv_usec, end->tv_sec, end->tv_usec, end->tv_sec - start->tv_sec, end->tv_usec - start->tv_usec);
+    #endif
 }
 
 /*** plugin interface functions ***/
