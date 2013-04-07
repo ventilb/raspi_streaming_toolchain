@@ -1,0 +1,5 @@
+# Configuration file for the mjpg-streamer service on the Raspberry PI.
+
+INPUT_PLUGIN="input_uvc.so -d /dev/video0 -f 1"
+
+OUTPUT_PLUGIN="output_tcp.so -s 192.168.178.23 -p 8124"
