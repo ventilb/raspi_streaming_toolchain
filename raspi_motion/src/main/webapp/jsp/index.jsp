@@ -21,16 +21,40 @@
   @since 04.04.13 - 11:53
 --%>
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
+<!DOCTYPE html>
 <html>
 <head>
     <title>${pageTitle}</title>
     <link href="${pageContext.request.contextPath}/static/css/page.css" rel="stylesheet" type="text/css"/>
+    <script src="http://code.jquery.com/jquery-1.9.1.min.js"></script>
+    <script type="text/javascript">
+        $(document).ready(function () {
+            var img = $('#webcam_image_stream_img');
+
+            // See: http://css-tricks.com/snippets/javascript/detect-internet-explorer/
+            if (/MSIE (\d+\.\d+);/.test(navigator.userAgent)) {
+                console.log('Detected IE');
+
+                // Damit der IE die URL nicht cached
+                var count = 0;
+
+                setInterval(function () {
+                    img.attr('src', '${pageContext.request.contextPath}/image/webcam.jpg?rofliecaching=' + (count++));
+                }, 1000);
+            } else {
+                console.log('Other Browser detected');
+                img.attr('src', '${pageContext.request.contextPath}/stream/webcam.jpg');
+            }
+
+        });
+    </script>
 </head>
 <body>
 <div id="content_outer_container">
     <div id="content_inner_container">
         <div id="webcam_image_stream">
-            <img src="${pageContext.request.contextPath}/stream/webcam.jpg" width="640" height="480"/>
+            <img id="webcam_image_stream_img" src="${pageContext.request.contextPath}/image/webcam.jpg" width="640"
+                 height="480"/>
         </div>
     </div>
 </div>
