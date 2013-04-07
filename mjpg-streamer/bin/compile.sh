@@ -48,7 +48,6 @@ cd $MODULE_NAME
 
 echo "Patching Makefile"
 patch -p0 Makefile plugins/output_tcp/patches/__Patch_for_mjpg-streamer_Makefile_to_compile_our_output_tcp_plugin.patch
-patch -p0 plugins/input_uvc/input_uvc.c plugins/output_tcp/patches/__Thread_sleep_time_reduced_by_100ms.patch
 
 echo "Compiling mjpg-streamer"
 make
