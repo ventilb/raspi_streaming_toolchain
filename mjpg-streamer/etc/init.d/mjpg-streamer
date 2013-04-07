@@ -53,7 +53,7 @@ do_start()
 	start-stop-daemon --start --quiet --pidfile $PIDFILE --exec $DAEMON --test > /dev/null \
 		|| return 1
 
-	start-stop-daemon --start --quiet --pidfile $PIDFILE --startas $DAEMON & -- -i "$INPUT_PLUGIN" -o "$OUTPUT_PLUGIN" \
+	start-stop-daemon --start --quiet --pidfile $PIDFILE --background --exec $DAEMON -- -i "$INPUT_PLUGIN" -o "$OUTPUT_PLUGIN" \
 		|| return 2
 
 	# Add code here, if necessary, that waits for the process to be ready
