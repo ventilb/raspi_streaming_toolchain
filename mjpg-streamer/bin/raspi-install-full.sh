@@ -33,13 +33,15 @@ PACKAGE_BASE=mjpg-streamer.tar.gz
 PACKAGE=/tmp/mjpg-streamer-src/$PACKAGE_BASE
 INSTALL_DIR=/opt
 
+REPOSITORY=$1
+
 cd /tmp
 
 if [ -d "raspi_streaming_toolchain" ] ; then
     rm -rf raspi_streaming_toolchain
 fi
 
-git clone git://github.com/ventilb/raspi_streaming_toolchain.git
+git clone $REPOSITORY
 
 cd raspi_streaming_toolchain/mjpg-streamer
 
