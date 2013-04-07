@@ -32,7 +32,5 @@ public interface FileDescriptorDao {
 
     public FileDescriptor getFileLastCreated(String filename) throws Exception;
 
-    public void loadFilesCreatedAfter(Date after, String filename, List<FileDescriptor> files) throws Exception;
-
     public InputStream openFileInputStream(FileDescriptor fd);
 }

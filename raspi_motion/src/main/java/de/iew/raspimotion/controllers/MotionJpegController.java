@@ -51,6 +51,8 @@ public class MotionJpegController {
 
     private static final Log log = LogFactory.getLog(MotionJpegController.class);
 
+    private double fps = 1;
+
     @RequestMapping(value = "image/{imagename:.+}")
     public void imageAction(
             HttpServletResponse response,
@@ -78,32 +80,61 @@ public class MotionJpegController {
     ) throws Exception {
         Assert.isTrue(validateImagename(imagename));
 
-        FileDescriptor file = this.fileDao.getFileLastCreated(imagename);
-
-        if (file == null) {
-            throw new NoSuchElementException("Image was not found");
-        }
-
-        sendCachingHeaders(response);
-        response.setContentType("multipart/x-mixed-replace;boundary=BOUNDARY");
-
         OutputStream out = response.getOutputStream();
-        List<FileDescriptor> files = new ArrayList<FileDescriptor>();
+        try {
+            FileDescriptor file = this.fileDao.getFileLastCreated(imagename);
 
-        writeFrameBoundary(out);
-
-        files.add(file);
-
-        while (true) {
-            this.fileDao.loadFilesCreatedAfter(file.getCreateDate(), imagename, files);
-            for (FileDescriptor fileIterator : files) {
-                writeFrame(out, fileIterator);
-
-                response.flushBuffer();
-
-                file = fileIterator;
+            if (file == null) {
+                throw new NoSuchElementException("Image was not found");
             }
-            files.clear();
+
+            sendCachingHeaders(response);
+            response.setStatus(HttpServletResponse.SC_OK);
+            response.setContentType("multipart/x-mixed-replace;boundary=BOUNDARY");
+
+            writeFrameBoundary(out);
+            writeFrame(out, file);
+
+            long processingTime;
+            long startTs;
+
+            double fpsTime = 1000 / this.fps;
+            long sleepTime;
+
+            while (true) {
+                startTs = System.currentTimeMillis();
+                file = this.fileDao.getFileLastCreated(imagename);
+
+                writeFrame(out, file);
+
+                processingTime = System.currentTimeMillis() - startTs;
+
+                if (log.isDebugEnabled()) {
+                    log.debug("Zeitdauer für gesamten Vorgang: " + processingTime);
+                }
+
+                sleepTime = (long) (fpsTime - processingTime);
+
+                if (log.isDebugEnabled()) {
+                    log.debug("Schlafe " + sleepTime);
+                }
+
+                if (sleepTime > 0) {
+                    Thread.sleep(sleepTime);
+                }
+            }
+        } catch (Exception e) {
+            if (log.isErrorEnabled()) {
+                log.error("Motion JPEG handling aborted", e);
+            }
+            try {
+                out.flush();
+                out.close();
+            } catch (Exception ex) {
+                if (log.isDebugEnabled()) {
+                    log.debug("Closing failed", ex);
+                }
+            }
         }
     }
 

@@ -16,22 +16,17 @@
 
 package de.iew.raspimotion.persistence.mongodb;
 
-import com.mongodb.*;
-import com.mongodb.gridfs.GridFS;
 import com.mongodb.gridfs.GridFSDBFile;
 import de.iew.raspimotion.domain.FileDescriptor;
 import de.iew.raspimotion.persistence.FileDescriptorDao;
 import org.bson.types.ObjectId;
-import org.springframework.beans.factory.DisposableBean;
-import org.springframework.context.ApplicationListener;
-import org.springframework.context.event.ApplicationContextEvent;
-import org.springframework.context.event.ContextRefreshedEvent;
-import org.springframework.context.event.ContextStartedEvent;
-import org.springframework.context.event.ContextStoppedEvent;
+import org.springframework.data.domain.Sort;
+import org.springframework.data.mongodb.core.MongoTemplate;
+import org.springframework.data.mongodb.core.query.Criteria;
+import org.springframework.data.mongodb.core.query.Query;
+import org.springframework.data.mongodb.gridfs.GridFsTemplate;
 
 import java.io.InputStream;
-import java.util.Date;
-import java.util.List;
 
 /**
  * DAO implementation to access files stored in a Mongo DB instance.
@@ -39,108 +34,33 @@ import java.util.List;
  * @author Manuel Schulze <manuel_schulze@i-entwicklung.de>
  * @since 04.04.13 - 00:52
  */
-public class MongoDbFileDaoImpl implements FileDescriptorDao, ApplicationListener<ApplicationContextEvent>, DisposableBean {
-
-    private MongoClient mongoClient;
-
-    private DB mongoDb;
-
-    private GridFS gridFS;
-
-    private volatile boolean running = false;
+public class MongoDbFileDaoImpl implements FileDescriptorDao {
 
     public FileDescriptor getFileLastCreated(String filename) throws Exception {
-        MongoDbFile file = null;
+        Query query = new Query(Criteria.where("filename").is(filename)).with(new Sort(new Sort.Order(Sort.Direction.DESC, "uploadDate")));
 
-        DBCursor cursor = this.gridFS.getFileList(new BasicDBObject("filename", filename)).sort(new BasicDBObject("uploadDate", -1)).limit(1);
-
-        if (cursor.hasNext()) {
-            DBObject fileObject = cursor.next();
-
-            file = mapMongoDbFile(fileObject);
-        }
-
-        return file;
-    }
-
-    public void loadFilesCreatedAfter(Date after, String filename, List<FileDescriptor> files) throws Exception {
-        BasicDBObject query = new BasicDBObject("filename", filename);
-        query.put("uploadDate", new BasicDBObject("$gt", after));
-
-        DBCursor cursor = this.gridFS.getFileList(query).sort(new BasicDBObject("uploadDate", 1));
-
-        FileDescriptor file;
-        while (cursor.hasNext()) {
-            DBObject fileObject = cursor.next();
-
-            file = mapMongoDbFile(fileObject);
-
-            files.add(file);
-        }
+        return this.mongoTemplate.findOne(query, MongoDbFile.class, "fs.files");
     }
 
     public InputStream openFileInputStream(FileDescriptor fd) {
         MongoDbFile mongoDbFile = (MongoDbFile) fd;
 
-        GridFSDBFile gridFSDBFile = this.gridFS.find(new ObjectId(mongoDbFile.getId()));
+        GridFSDBFile gridFSDBFile = this.gridFsTemplate.findOne(new Query(Criteria.where("id").is(new ObjectId(mongoDbFile.getId()))));
         return gridFSDBFile.getInputStream();
-    }
-
-    public synchronized void onApplicationEvent(ApplicationContextEvent event) {
-        try {
-            if (event instanceof ContextStartedEvent
-                    || event instanceof ContextRefreshedEvent) {
-                if (!this.running) {
-                    this.mongoClient = new MongoClient(this.mongohost, this.mongoport);
-                    this.mongoDb = mongoClient.getDB(this.mongodb);
-                    this.gridFS = new GridFS(this.mongoDb);
-
-                    this.running = true;
-                }
-            } else if (event instanceof ContextStoppedEvent) {
-                destroy();
-            }
-        } catch (Exception e) {
-            e.printStackTrace();
-            this.running = false;
-        }
-    }
-
-    public synchronized void destroy() throws Exception {
-        if (this.running) {
-            this.mongoClient.close();
-        }
-    }
-
-    protected MongoDbFile mapMongoDbFile(DBObject dbObject) {
-        MongoDbFile file = new MongoDbFile();
-        file.setId((dbObject.get("_id")).toString());
-        file.setCreateDate((Date) dbObject.get("uploadDate"));
-        file.setFilename((String) dbObject.get("filename"));
-        file.setContentType((String) dbObject.get("contentType"));
-        file.setFilesize((Long) dbObject.get("length"));
-        file.setMd5((String) dbObject.get("md5"));
-        return file;
     }
 
     // Setters ////////////////////////////////////////////////////////////////
 
-    private String mongohost;
+    private MongoTemplate mongoTemplate;
 
-    private int mongoport;
+    private GridFsTemplate gridFsTemplate;
 
-    private String mongodb;
-
-    public void setMongohost(String mongohost) {
-        this.mongohost = mongohost;
+    public void setMongoTemplate(MongoTemplate mongoTemplate) {
+        this.mongoTemplate = mongoTemplate;
     }
 
-    public void setMongoport(int mongoport) {
-        this.mongoport = mongoport;
-    }
-
-    public void setMongodb(String mongodb) {
-        this.mongodb = mongodb;
+    public void setGridFsTemplate(GridFsTemplate gridFsTemplate) {
+        this.gridFsTemplate = gridFsTemplate;
     }
 
 }

@@ -17,6 +17,7 @@
 package de.iew.raspimotion.persistence.mongodb;
 
 import de.iew.raspimotion.domain.FileDescriptor;
+import org.springframework.data.annotation.Id;
 
 import java.io.Serializable;
 import java.util.Date;
@@ -29,15 +30,18 @@ import java.util.Date;
  */
 public class MongoDbFile implements Serializable, FileDescriptor {
 
+    @Id
     private String id;
 
     private String filename;
 
-    private long filesize;
+    private long length;
 
     private String contentType;
 
-    private Date createDate;
+    // TODO Herausfinden wie man das Property Mapping beeinflussen kann => Siehe Converter Deklaration in XML
+    // Wichtig: Dieses Feld muss uploadDate heißen. Sonst wird es nicht automatisch gemappt.
+    private Date uploadDate;
 
     private String md5;
 
@@ -66,19 +70,37 @@ public class MongoDbFile implements Serializable, FileDescriptor {
     }
 
     public long getFilesize() {
-        return filesize;
+        return length;
     }
 
     public void setFilesize(long filesize) {
-        this.filesize = filesize;
+        this.length = filesize;
+    }
+
+    // Mongo DB Eigenschaft
+    public long getLength() {
+        return length;
+    }
+
+    public void setLength(long length) {
+        this.length = length;
     }
 
     public Date getCreateDate() {
-        return createDate;
+        return this.uploadDate;
     }
 
     public void setCreateDate(Date createDate) {
-        this.createDate = createDate;
+        this.uploadDate = createDate;
+    }
+
+    // GridFS Kompatibilität; Man kann das sicher auch irgendwie durch den Konverter regeln.
+    public Date getUploadDate() {
+        return uploadDate;
+    }
+
+    public void setUploadDate(Date uploadDate) {
+        this.uploadDate = uploadDate;
     }
 
     public String getMd5() {
