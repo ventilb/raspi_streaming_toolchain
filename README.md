@@ -27,6 +27,15 @@ notwendig.
 Erstellt einen zusammengesetzten Index über den Dateinamen in aufsteigender
 Ordnung und dem Upload-Datum in absteigender Sortierung.
 
+Requirements
+------------
+Um mjpg-streamer zu kompilieren wird libjpeg-devel benötigt.
+
+Um mjpg-streamer nach einem Neustart des Raspberry automatisch zu starten kann
+die Runlevel Konfiguration wie folgt eingestellt werden.
+
+    update-rc.d mjpg-streamer defaults
+
 [1]: http://de.wikipedia.org/wiki/Motion_JPEG                  "Motion JEPG"
 [2]: http://sourceforge.net/projects/mjpg-streamer/            "mjpg-streamer Projektseite"
 [3]: http://wolfpaulus.com/journal/embedded/raspberrypi_webcam "Streaming Your Webcam w/ Raspberry Pi"
