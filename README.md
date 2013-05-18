@@ -30,6 +30,13 @@ Ordnung und dem Upload-Datum in absteigender Sortierung.
 Requirements
 ------------
 *mjpg-streamer*
+
+Die Paketabhängigkeiten werden wie folgt auf dem PI installiert.
+sudo apt-get install imagemagick
+sudo apt-get install git
+sudo apt-get install subversion
+sudo apt-get install libjpeg8-dev
+
 Um mjpg-streamer zu kompilieren wird libjpeg-devel benötigt.
 
 Um mjpg-streamer nach einem Neustart des Raspberry automatisch zu starten kann
