@@ -32,10 +32,11 @@ Requirements
 *mjpg-streamer*
 
 Die Paketabhängigkeiten werden wie folgt auf dem PI installiert.
-sudo apt-get install imagemagick
-sudo apt-get install git
-sudo apt-get install subversion
-sudo apt-get install libjpeg8-dev
+
+    apt-get install imagemagick
+    apt-get install git
+    apt-get install subversion
+    apt-get install libjpeg8-dev
 
 Um mjpg-streamer zu kompilieren wird libjpeg-devel benötigt.
 
